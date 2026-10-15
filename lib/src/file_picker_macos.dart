@@ -59,6 +59,7 @@ class FilePickerMacOS extends FilePicker {
     final filePaths = await methodChannel.invokeListMethod<String>(
       'pickFiles',
       <String, dynamic>{
+        'dialogTitle': dialogTitle,
         'allowedExtensions': fileFilter,
         'initialDirectory': escapeInitialDirectory(initialDirectory),
         'allowMultiple': allowMultiple,
@@ -86,6 +87,7 @@ class FilePickerMacOS extends FilePicker {
     final String? directoryPath = await methodChannel.invokeMethod<String>(
       'getDirectoryPath',
       <String, dynamic>{
+        'dialogTitle': dialogTitle,
         'initialDirectory': escapeInitialDirectory(initialDirectory),
       },
     );
@@ -111,7 +113,7 @@ class FilePickerMacOS extends FilePicker {
     final String? savedFilePath = await methodChannel.invokeMethod<String>(
       'saveFile',
       <String, dynamic>{
-        'dialogTitle': escapeDialogTitle(dialogTitle ?? defaultDialogTitle),
+        'dialogTitle': dialogTitle ?? defaultDialogTitle,
         'fileName': fileName,
         'initialDirectory': escapeInitialDirectory(initialDirectory),
         'allowedExtensions': fileFilter,

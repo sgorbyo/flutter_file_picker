@@ -4,8 +4,34 @@ library;
 import 'package:file_picker/src/file_picker.dart';
 import 'package:file_picker/src/file_picker_macos.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter/services.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+  test('forwards dialog purpose verbatim to open, directory and save panels',
+      () async {
+    final picker = FilePickerMacOS();
+    final calls = <MethodCall>[];
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(picker.methodChannel, (call) async {
+      calls.add(call);
+      return null;
+    });
+    const title = 'Recover documents — "backup"\n(.igenbackup)';
+    try {
+      expect(await picker.pickFiles(dialogTitle: title), isNull);
+      expect(await picker.getDirectoryPath(dialogTitle: title), isNull);
+      expect(await picker.saveFile(dialogTitle: title), isNull);
+      expect(calls.map((call) => call.method),
+          ['pickFiles', 'getDirectoryPath', 'saveFile']);
+      for (final call in calls) {
+        expect(call.arguments['dialogTitle'], title);
+      }
+    } finally {
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(picker.methodChannel, null);
+    }
+  });
   group('fileTypeToFileFilter()', () {
     test('should return the file filter', () {
       final picker = FilePickerMacOS();

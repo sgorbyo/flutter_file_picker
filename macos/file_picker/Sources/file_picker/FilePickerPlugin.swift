@@ -54,6 +54,7 @@ public class FilePickerPlugin: NSObject, FlutterPlugin {
         }
         let dialog = NSOpenPanel()
         let args = call.arguments as! [String: Any]
+        applyFileDialogTitle(dialog, title: args["dialogTitle"] as? String)
         
         dialog.directoryURL = URL(
             fileURLWithPath: args["initialDirectory"] as? String ?? ""
@@ -106,6 +107,7 @@ public class FilePickerPlugin: NSObject, FlutterPlugin {
         }
         let dialog: NSOpenPanel = NSOpenPanel()
         let args = call.arguments as! [String: Any]
+        applyFileDialogTitle(dialog, title: args["dialogTitle"] as? String)
         
         dialog.directoryURL = URL(
             fileURLWithPath: args["initialDirectory"] as? String ?? ""
@@ -148,6 +150,7 @@ public class FilePickerPlugin: NSObject, FlutterPlugin {
         
         let dialog = NSOpenPanel()
         let args = call.arguments as! [String: Any]
+        applyFileDialogTitle(dialog, title: args["dialogTitle"] as? String)
         
         dialog.directoryURL = URL(
             fileURLWithPath: args["initialDirectory"] as? String ?? ""
@@ -185,8 +188,8 @@ public class FilePickerPlugin: NSObject, FlutterPlugin {
         
         let dialog = NSSavePanel()
         let args = call.arguments as! [String: Any]
+        applyFileDialogTitle(dialog, title: args["dialogTitle"] as? String)
         
-        dialog.title = args["dialogTitle"] as? String ?? ""
         dialog.showsTagField = false
         dialog.showsHiddenFiles = false
         dialog.canCreateDirectories = true
