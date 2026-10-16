@@ -27,6 +27,7 @@
 @property (nonatomic) dispatch_group_t group;
 @property (nonatomic) MediaType type;
 @property (nonatomic) BOOL isSaveFile;
+@property (nonatomic, copy) NSString *dialogTitle;
 @end
 
 @implementation FilePickerPlugin
@@ -89,6 +90,8 @@
     }
     
     _result = result;
+    id title = [call.arguments isKindOfClass:[NSDictionary class]] ? call.arguments[@"dialogTitle"] : nil;
+    self.dialogTitle = [title isKindOfClass:[NSString class]] ? title : nil;
     
     if([call.method isEqualToString:@"clear"]) {
         _result([NSNumber numberWithBool: [FilePickerUtils clearTemporaryFiles]]);
@@ -198,6 +201,8 @@
         }
     }
     self.documentPickerController = [[UIDocumentPickerViewController alloc] initWithURL:destinationPath inMode:UIDocumentPickerModeExportToService];
+    self.documentPickerController.title = self.dialogTitle;
+    self.documentPickerController.navigationItem.prompt = self.dialogTitle;
     self.documentPickerController.delegate = self;
     self.documentPickerController.presentationController.delegate = self;
     if(@available(iOS 13, *)){
@@ -223,6 +228,8 @@
     }
     
     self.documentPickerController.allowsMultipleSelection = allowsMultipleSelection;    
+    self.documentPickerController.title = self.dialogTitle;
+    self.documentPickerController.navigationItem.prompt = self.dialogTitle;
     self.documentPickerController.delegate = self;
     self.documentPickerController.presentationController.delegate = self;
     

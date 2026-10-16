@@ -49,6 +49,7 @@ class FilePickerIO extends FilePicker {
         withData,
         withReadStream,
         compressionQuality,
+        dialogTitle,
       );
 
   @override
@@ -62,7 +63,7 @@ class FilePickerIO extends FilePicker {
     String? initialDirectory,
   }) async {
     try {
-      return await _channel.invokeMethod('dir', {});
+      return await _channel.invokeMethod('dir', {'dialogTitle': dialogTitle});
     } on PlatformException catch (ex) {
       if (ex.code == "unknown_path") {
         print(
@@ -81,6 +82,7 @@ class FilePickerIO extends FilePicker {
     bool? withData,
     bool? withReadStream,
     int? compressionQuality,
+    String? dialogTitle,
   ) async {
     final String type = fileType.name;
     if (type != 'custom' && (allowedExtensions?.isNotEmpty ?? false)) {
@@ -105,6 +107,7 @@ class FilePickerIO extends FilePicker {
       }
 
       final List<Map>? result = await _channel.invokeListMethod(type, {
+        'dialogTitle': dialogTitle,
         'allowMultipleSelection': allowMultipleSelection,
         'allowedExtensions': allowedExtensions,
         'allowCompression': allowCompression,
@@ -156,6 +159,7 @@ class FilePickerIO extends FilePicker {
       }
 
       return _channel.invokeMethod("save", {
+        "dialogTitle": dialogTitle,
         "fileName": fileName,
         "fileType": type.name,
         "initialDirectory": initialDirectory,
